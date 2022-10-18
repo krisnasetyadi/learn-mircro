@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const { randomBytes } = require('crypto')
 const cors = require('cors')
 const axios = require('axios')
+const PORT = 4001
 const app = express()
 app.use(bodyParser.json())
 app.use(cors())
@@ -21,21 +22,23 @@ app.post('/posts/:id/comments', async (req, res)=>{
     comments.push({id: commentId, content})
     commentsByPostId[req.params.id] = comments
 
-    await app.post('http://localhost:4005/events', {
+    await axios.post('http://localhost:4005/events', {
         type:'CommentCreated',
         data: {
-            id: commentId, content, postId:req.params.id
+            id: commentId,
+            content,
+            postId: req.params.id
         }
     })
     res.status(201).send(comments)
 })
 
 app.post('/events', (req, res) => {
-    console.log('Event Received: ', req.body.type)
+    console.log('Event Received:', req.body.type);
 
-    res.send({})
+    res.send({});
 })
 
-app.listen(4001,() =>{  
-    console.log('this server run on 4001')
+app.listen(PORT,() =>{  
+    console.log(`Comment service is run on PORT ${PORT}`)
 })
