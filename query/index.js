@@ -19,13 +19,7 @@ const posts = {}
 //         ]
 //     }
 // }
-app.get('/posts', (req, res) => {
-    res.send(posts);
-})
-
-app.post('/events', (req, res) => {
-    const { type, data } = req.body;
-    
+const handleEvent = (type, data) => {
     if(type === 'PostCreated') {
         const { id, title } = data;
 
@@ -47,10 +41,28 @@ app.post('/events', (req, res) => {
         comment.status = status;
         comment.content = content;
     }
-    console.log('current data structure', posts);
+}
+
+app.get('/posts', (req, res) => {
+    res.send(posts);
+})
+
+app.post('/events', (req, res) => {
+    const { type, data } = req.body;
+    handleEvent(type, data)
+ 
+    // console.log('current data structure', posts);
     res.send({});
 })
 
-app.listen(PORT, () => {
+app.listen(PORT, async() => {
     console.log( `Query service is running on port ${PORT}` )
+    // make req to event bus
+
+    const res = await axios.get('http://localhost:4005/events')
+
+    for ( let event of res.data) {
+        console.log('processing event: ', event.type)
+        handleEvent(event.type, event.data)
+    }
 })
