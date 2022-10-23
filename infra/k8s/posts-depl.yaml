@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: posts-depl
+spec:
+  replicas: 1 #number of pods that we want to create running particular image
+  selector:
+    matchLabels: #find all the pods with a label of app posts
+      app: posts #key value pairs, app have no special meaning you can do like "asdasd: asdadsa"
+  template:
+    metadata:
+      labels:
+        app: posts
+    spec:
+      containers:
+        - name: posts
+          image: krisnasetyadi/posts:0.0.5
