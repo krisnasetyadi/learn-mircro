@@ -39,6 +39,6 @@ app.post('/events', (req, res) => {
 })
 
 app.listen(PORT, ()=>{
-    console.log('v20')
+    console.log('v55')
     console.log(`Post service is running on port ${PORT}`)
 })
